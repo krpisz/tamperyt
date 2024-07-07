@@ -50,7 +50,7 @@
             if (storedData) {
                 [olddata, time] = JSON.parse(storedData);
             }
-            if (data && time > Date.now() - 60000) {
+            if (olddata && time > Date.now() - 60000) {
                 console.log('Data found in local storage.');
                 resolve(olddata);
             } else {
