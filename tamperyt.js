@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TamerYT
 // @namespace    http://tampermonkey.net/
-// @version      1.5
+// @version      1.6
 // @description  try to take over the world!
 // @author       You
 // @match        https://www.youtube.com/*
@@ -54,7 +54,7 @@
             if (storedData) {
                 [olddata, time] = JSON.parse(storedData);
             }
-            if (data && time > Date.now() - 60000) {
+            if (olddata && time > Date.now() - 60000) {
                 console.log('Data found in local storage.');
                 resolve(olddata);
             } else {
