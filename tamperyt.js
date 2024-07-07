@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TamerYT
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  try to take over the world!
 // @author       You
 // @match        https://www.youtube.com/watch?v=*
@@ -16,6 +16,10 @@
 
     const url = 'https://raw.githubusercontent.com/krpisz/tamperyt/main/list';
     var time = 5000;
+    var channels = [
+    "Lakarnum",
+    "Toriiyt"
+    ];
 
     function delay(){
         time = Math.min(60000, time + 2000);
@@ -42,22 +46,22 @@
         update = update || false;
         return new Promise((resolve, reject) => {
             const storedData = localStorage.getItem('tamperyt');
-            var data, time = 0;
+            var olddata, time = 0;
             if (storedData) {
-                [data, time] = JSON.parse(storedData);
+                [olddata, time] = JSON.parse(storedData);
             }
             if (data && time > Date.now() - 60000) {
                 console.log('Data found in local storage.');
-                resolve(data);
+                resolve(olddata);
             } else {
                 fetchDataAndStore().then(data => {
                     if (data) {
                         resolve(data);
                     } else {
-                        reject('Failed to fetch data.');
+                        resolve(olddata || channels);
                     }
                 }).catch(error => {
-                    reject(error);
+                    resolve(olddata || channels);
                 });
             }
         });
@@ -75,7 +79,7 @@
         }
         setTimeout(function(){
             getData().then(x => blockYt(x))
-        }, 1500)
+        }, 500)
     }
 
     console.log('Staring')
