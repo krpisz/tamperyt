@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         TamerYT
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  try to take over the world!
 // @author       You
-// @match        https://www.youtube.com/watch?v=*
+// @match        https://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @updateURL    https://raw.githubusercontent.com/krpisz/tamperyt/main/tamperyt.js
 // @downloadURL  https://raw.githubusercontent.com/krpisz/tamperyt/main/tamperyt.js
@@ -17,13 +17,17 @@
     const url = 'https://raw.githubusercontent.com/krpisz/tamperyt/main/list';
     var time = 5000;
     var channels = [
-    "Lakarnum",
-    "Toriiyt"
+        "Lakarnum",
+        "Toriiyt"
     ];
 
     function delay(){
         time = Math.min(60000, time + 2000);
         return time;
+    }
+
+    function checkUrl(){
+        return window.location.href.match(/watch\?v=/) !== null
     }
 
     async function fetchDataAndStore() {
@@ -50,7 +54,7 @@
             if (storedData) {
                 [olddata, time] = JSON.parse(storedData);
             }
-            if (olddata && time > Date.now() - 60000) {
+            if (data && time > Date.now() - 60000) {
                 console.log('Data found in local storage.');
                 resolve(olddata);
             } else {
@@ -58,7 +62,7 @@
                     if (data) {
                         resolve(data);
                     } else {
-                        resolve(olddata || channels); 
+                        resolve(olddata || channels);
                     }
                 }).catch(error => {
                     resolve(olddata || channels);
@@ -69,17 +73,18 @@
 
     let alts = ['u1CiW4up3E', '70cHGrA55', '5KiBi4iTOi13T', 's11Mip4L3'];
     function blockYt(ylist){
-        let html = document.body.innerHTML;
-        for(let str of ylist){
-            if(document.querySelector('[href="/@'+str+'"]')){
-                console.log("page includes:" + str )
-                window.location.href = 'https://www.youtube.com/watch?v=' + alts[Math.floor(Math.random() * alts.length)]
-                return;
+        if(checkUrl()){
+            for(let str of ylist){
+                if(document.querySelector('[href="/@'+str+'"]')){
+                    console.log("page includes:" + str )
+                    window.location.href = 'https://www.youtube.com/watch?v=' + alts[Math.floor(Math.random() * alts.length)]
+                    return;
+                }
             }
         }
         setTimeout(function(){
             getData().then(x => blockYt(x))
-        }, 500)
+        }, 1000)
     }
 
     console.log('Staring')
